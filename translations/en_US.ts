@@ -3536,6 +3536,17 @@ Maybe you have downloaded the wrong core?</source>
     </message>
 </context>
 <context>
+    <name>trojanOutEditor</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>vlessOutEditor</name>
     <message>
         <source>Form</source>
