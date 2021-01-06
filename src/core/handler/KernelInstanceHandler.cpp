@@ -134,6 +134,8 @@ namespace Qv2ray::core::handler
             }
             LOG("Applying new outbound settings.");
             fullConfig["outbounds"] = processedOutbounds;
+            if (GlobalConfig.advancedConfig.muxConfigOverride)
+                OverrideMuxFilter(fullConfig);
             RemoveEmptyMuxFilter(fullConfig);
         }
 

@@ -133,10 +133,14 @@ namespace Qv2ray::base::config
         bool testLatencyPeriodcally = false;
         bool disableSystemRoot = false;
         bool testLatencyOnConnected = false;
+        bool muxConfigOverride = false;
+        bool overrideMuxEnabled = false;
+        int overrideMuxConcurrency = 8;
         JSONSTRUCT_COMPARE(Qv2rayConfig_Advanced, setAllowInsecure, setSessionResumption, testLatencyPeriodcally, disableSystemRoot,
-                           testLatencyOnConnected)
+                           testLatencyOnConnected, muxConfigOverride, overrideMuxEnabled, overrideMuxConcurrency)
         JSONSTRUCT_REGISTER(Qv2rayConfig_Advanced,
-                            F(setAllowInsecure, setSessionResumption, testLatencyPeriodcally, disableSystemRoot, testLatencyOnConnected))
+                            F(setAllowInsecure, setSessionResumption, testLatencyPeriodcally, disableSystemRoot, testLatencyOnConnected,
+                              muxConfigOverride, overrideMuxEnabled, overrideMuxConcurrency))
     };
 
     enum Qv2rayLatencyTestingMethod

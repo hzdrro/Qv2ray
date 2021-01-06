@@ -200,6 +200,9 @@ PreferencesWindow::PreferencesWindow(QWidget *parent) : QvDialog("PreferenceWind
         setTestLatenctCB->setChecked(CurrentConfig.advancedConfig.testLatencyPeriodcally);
         setTestLatenctOnConnectedCB->setChecked(CurrentConfig.advancedConfig.testLatencyOnConnected);
         disableSystemRootCB->setChecked(CurrentConfig.advancedConfig.disableSystemRoot);
+        muxConfigOverrideCB->setChecked(CurrentConfig.advancedConfig.muxConfigOverride);
+        overrideMuxEnabledCB->setChecked(CurrentConfig.advancedConfig.overrideMuxEnabled);
+        overrideMuxConcurrencyBox->setValue(CurrentConfig.advancedConfig.overrideMuxConcurrency);
     }
     //
     {
@@ -1158,4 +1161,25 @@ void PreferencesWindow::on_startMinimizedCB_stateChanged(int arg1)
 {
     LOADINGCHECK
     CurrentConfig.uiConfig.startMinimized = arg1 == Qt::Checked;
+}
+
+void PreferencesWindow::on_muxConfigOverrideCB_stateChanged(int arg1)
+{
+    NEEDRESTART
+    LOADINGCHECK
+    CurrentConfig.advancedConfig.muxConfigOverride = arg1 == Qt::Checked;
+}
+
+void PreferencesWindow::on_overrideMuxEnabledCB_stateChanged(int arg1)
+{
+    NEEDRESTART
+    LOADINGCHECK
+    CurrentConfig.advancedConfig.overrideMuxEnabled = arg1 == Qt::Checked;
+}
+
+void PreferencesWindow::on_overrideMuxConcurrencyBox_valueChanged(int arg1)
+{
+    NEEDRESTART
+    LOADINGCHECK
+    CurrentConfig.advancedConfig.overrideMuxConcurrency = arg1;
 }

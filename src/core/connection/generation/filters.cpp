@@ -84,4 +84,17 @@ namespace Qv2ray::core::connection::generation::filters
         }
     }
 
+    void OverrideMuxFilter(CONFIGROOT &root)
+    {
+        for (auto i = 0; i < root["outbounds"].toArray().count(); i++)
+        {
+            const auto tag = QJsonIO::GetValue(root, "outbounds", i, "tag").toString();
+            if (tag == "PROXY")
+            {
+                QJsonIO::SetValue(root, GlobalConfig.advancedConfig.overrideMuxEnabled, "outbounds", i, "mux", "enabled");
+                QJsonIO::SetValue(root, GlobalConfig.advancedConfig.overrideMuxConcurrency, "outbounds", i, "mux", "concurrency");
+            }
+        }
+    }
+
 } // namespace Qv2ray::core::connection::generation::filters

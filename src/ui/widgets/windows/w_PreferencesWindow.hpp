@@ -131,6 +131,9 @@ class PreferencesWindow
     void on_disableSystemRootCB_stateChanged(int arg1);
     void on_openConfigDirCB_clicked();
     void on_startMinimizedCB_stateChanged(int arg1);
+    void on_muxConfigOverrideCB_stateChanged(int arg1);
+    void on_overrideMuxEnabledCB_stateChanged(int arg1);
+    void on_overrideMuxConcurrencyBox_valueChanged(int arg1);
 
   private:
     //

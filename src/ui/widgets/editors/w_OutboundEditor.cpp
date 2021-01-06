@@ -114,13 +114,20 @@ void OutboundEditor::reloadGUI()
     tag = originalConfig["tag"].toString();
     tagTxt->setText(tag);
     outboundType = originalConfig["protocol"].toString("vmess");
-    muxConfig = originalConfig.contains("mux") ? originalConfig["mux"].toObject() : QJsonObject{};
+    muxConfig = GlobalConfig.advancedConfig.muxConfigOverride
+                ? (originalConfig.contains("mux") ? originalConfig["mux"].toObject() : QJsonObject{})
+                : QJsonObject{
+                                  {"enabled", GlobalConfig.advancedConfig.overrideMuxEnabled},
+                                  {"concurrency", GlobalConfig.advancedConfig.overrideMuxConcurrency}
+                             };
     useForwardProxy = originalConfig[QV2RAY_USE_FPROXY_KEY].toBool(false);
     streamSettingsWidget->SetStreamObject(StreamSettingsObject::fromJson(originalConfig["streamSettings"].toObject()));
     //
     useFPCB->setChecked(useForwardProxy);
     muxEnabledCB->setChecked(muxConfig["enabled"].toBool());
     muxConcurrencyTxt->setValue(muxConfig["concurrency"].toInt());
+    muxEnabledCB->setEnabled(!GlobalConfig.advancedConfig.muxConfigOverride);
+    muxConcurrencyTxt->setEnabled(!GlobalConfig.advancedConfig.muxConfigOverride);
     //
     const auto &settings = originalConfig["settings"].toObject();
     //
