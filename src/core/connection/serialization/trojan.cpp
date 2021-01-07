@@ -12,41 +12,27 @@ namespace Qv2ray::core::connection
         CONFIGROOT Deserialize(const QString &trojanUri, QString *alias, QString *errMessage)
         {
             TrojanServerObject server;
-            QString d_name;
 
-            if (trojanUri.length() < 9)
+            if (!trojanUri.startsWith("trojan://"))
             {
-                LOG("trojan:// string too short");
-                *errMessage = QObject::tr("Trojan URI is too short");
+                *errMessage = QObject::tr("Trojan link should start with trojan://");
+                return CONFIGROOT();
             }
 
-            auto uri = trojanUri.mid(9);
-            auto hashPos = uri.lastIndexOf("#");
-            DEBUG("Hash sign position: " + QSTRN(hashPos));
-
-            if (hashPos >= 0)
+            auto x = QUrl::fromUserInput(trojanUri);
+            if (!x.isValid())
             {
-                // Get the name/remark
-                d_name = uri.mid(uri.lastIndexOf("#") + 1);
-                uri.truncate(hashPos);
+                *errMessage = QObject::tr("link parse failed: %1").arg(x.errorString());
+                return CONFIGROOT();
             }
 
-            auto questionmarkPos = uri.indexOf('?');
-            DEBUG("Question mark sign position: " + QSTRN(questionmarkPos));
-
-            if (questionmarkPos >= 0)
-            {
-                // ignore unsupported / non-standard parameters
-                uri.truncate(questionmarkPos);
-            }
-
-            auto x = QUrl::fromUserInput(uri);
             server.address = x.host();
             server.port = x.port();
 
-            const auto password = x.userName();
-            server.password = password;
+            QString password = x.userInfo();
+            server.password = QUrl::fromPercentEncoding(password.toUtf8());
 
+            QString d_name = x.fragment();
             d_name = QUrl::fromPercentEncoding(d_name.toUtf8());
 
             CONFIGROOT root;
@@ -65,14 +51,16 @@ namespace Qv2ray::core::connection
         const QString Serialize(const TrojanServerObject &server, const QString &alias)
         {
             QUrl url;
-            const auto plainPassword = server.password;
-            const auto password = plainPassword.toUtf8();
-            url.setUserInfo(password);
+            const auto password = server.password.toUtf8();
+            url.setUserName(password, QUrl::DecodedMode);
             url.setScheme("trojan");
             url.setHost(server.address);
             url.setPort(server.port);
             url.setFragment(alias);
-            return url.toString(QUrl::ComponentFormattingOption::FullyEncoded);
+            // return url.toString(QUrl::ComponentFormattingOption::FullyEncoded)
+            QString str = url.toString(QUrl::ComponentFormattingOption::FullyEncoded);
+            str.replace(QString("%3A"), QString(":")); // Hack: replace "%3A" with ":" in Trojan password field
+            return str;
         }
     } // namespace serialization::trojan
 } // namespace Qv2ray::core::connection
